@@ -57,6 +57,10 @@ RUN chown -R www-data:www-data /var/www/html && chmod -R 775 /var/www/html
 # Laravel setup
 WORKDIR /var/www/html
 
+# Cấp quyền cho thư mục storage và logs
+RUN chown -R www-data:www-data /var/www/html/storage && \
+    chmod -R 775 /var/www/html/storage
+    
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
