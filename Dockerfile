@@ -134,41 +134,45 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Update Apache to listen on dynamic PORT
 RUN sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf && \
     sed -i "s/:80>/:${PORT}>/" /etc/apache2/sites-available/000-default.conf
-    
+
 # Copy source code
 COPY . /var/www/html/
 
 # Laravel setup
 WORKDIR /var/www/html
 
-# Đảm bảo tất cả các thư mục storage được tạo và cấp quyền đúng
-RUN mkdir -p /var/www/html/storage/logs \
-    /var/www/html/storage/framework/sessions \
-    /var/www/html/storage/framework/views \
-    /var/www/html/storage/framework/cache \
-    /var/www/html/bootstrap/cache
+# Đảm bảo các thư mục storage tồn tại
+RUN mkdir -p storage/logs storage/framework/{sessions,views,cache} bootstrap/cache
 
-# Phân quyền cho toàn bộ thư mục storage và bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
-    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Phân quyền storage
+RUN chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache
 
-# Chuẩn bị entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-# Install composer dependencies
+# Cài đặt các dependency PHP
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Chuẩn bị file môi trường
+# Tạo file .env nếu chưa có
 RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
-# Đặt permission cho thư mục gốc
+# 🔥 Publish vendor để generate các config như concord.php, octane.php
+RUN php artisan vendor:publish --all --force
+
+# Clear & optimize app
+RUN php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan route:clear && \
+    php artisan view:clear && \
+    php artisan clear-compiled && \
+    php artisan optimize
+
+# Set permission lần cuối
 RUN chown -R www-data:www-data /var/www/html && \
     find /var/www/html -type f -exec chmod 644 {} \; && \
     find /var/www/html -type d -exec chmod 755 {} \;
 
-# Mở khóa các lệnh artisan trong entrypoint.sh
-# (Entrypoint script sẽ chạy các lệnh này khi container khởi động)
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
