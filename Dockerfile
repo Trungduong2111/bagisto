@@ -41,7 +41,7 @@ RUN npm install -g npx
 # Apache config
 COPY ./.config/apache.conf /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
-
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Copy source code
 COPY . /var/www/html/
 
