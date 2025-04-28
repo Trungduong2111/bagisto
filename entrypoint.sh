@@ -53,22 +53,42 @@ chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 chmod 664 /var/www/html/storage/logs/laravel.log
 
+# Đảm bảo quyền cho public assets
+chown -R www-data:www-data /var/www/html/public
+chmod -R 755 /var/www/html/public
+
 # Kiểm tra file concord.php
 if [ ! -f /var/www/html/config/concord.php ]; then
     cp /var/www/html/vendor/konekt/concord/config/config.php /var/www/html/config/concord.php
 fi
+
+# Đảm bảo URL sử dụng HTTPS trong cấu hình
+sed -i "s|http://bagisto-production-e2fd.up.railway.app|https://bagisto-production-e2fd.up.railway.app|g" /var/www/html/config/app.php
 
 # Clear cache để đảm bảo cấu hình mới được áp dụng
 php artisan config:clear
 php artisan cache:clear
 php artisan route:clear
 php artisan view:clear
+php artisan clear-compiled
+
+# Publish các assets
+php artisan vendor:publish --all --force
+php artisan bagisto:publish
 
 # Tạo symlink cho storage
 php artisan storage:link
 
 # Tạo app key nếu chưa có
 php artisan key:generate --force
+
+# Tạo file .htaccess nếu không tồn tại
+if [ ! -f /var/www/html/public/.htaccess ]; then
+    cp /var/www/html/public/.htaccess.example /var/www/html/public/.htaccess
+fi
+
+# Optimize
+php artisan optimize
 
 # Khởi động Apache
 exec apache2-foreground
