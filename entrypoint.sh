@@ -60,8 +60,8 @@ if [ ! -f /var/www/html/.env ]; then
     cp /var/www/html/.env.example /var/www/html/.env
 fi
 
-# Composer install
-composer install --no-interaction --prefer-dist --optimize-autoloader
+# # Composer install
+# composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Check database ready
 echo "🔄 Waiting for database..."
@@ -70,10 +70,10 @@ until php artisan migrate:status > /dev/null 2>&1; do
   sleep 3
 done
 
-# Check config file concord.php
-if [ ! -f /var/www/html/config/concord.php ]; then
-    cp /var/www/html/vendor/konekt/concord/config/config.php /var/www/html/config/concord.php
-fi
+# # Check config file concord.php
+# if [ ! -f /var/www/html/config/concord.php ]; then
+#     cp /var/www/html/vendor/konekt/concord/config/config.php /var/www/html/config/concord.php
+# fi
 
 # Fix APP_URL if needed
 sed -i "s|http://bagisto-production-e2fd.up.railway.app|https://bagisto-production-e2fd.up.railway.app|g" /var/www/html/config/app.php
