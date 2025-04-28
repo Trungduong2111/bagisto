@@ -39,75 +39,65 @@
 
 set -e
 
-# Vào đúng thư mục
-cd /var/www/html
+# Create necessary folders
+mkdir -p /var/www/html/storage/logs
+mkdir -p /var/www/html/storage/framework/sessions
+mkdir -p /var/www/html/storage/framework/views
+mkdir -p /var/www/html/storage/framework/cache
+mkdir -p /var/www/html/bootstrap/cache
 
-# Tạo thư mục cần thiết
-mkdir -p storage/logs storage/framework/sessions storage/framework/views storage/framework/cache bootstrap/cache
+# Touch log file
+touch /var/www/html/storage/logs/laravel.log
 
-# Tạo file log nếu chưa có
-touch storage/logs/laravel.log
+# Set permissions
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage/logs
+chmod 664 /var/www/html/storage/logs/laravel.log
 
-# Phân quyền
-chown -R www-data:www-data storage bootstrap/cache public
-chmod -R 775 storage bootstrap/cache
-chmod 664 storage/logs/laravel.log
-
-# Đảm bảo file .env có
-if [ ! -f .env ]; then
-    cp .env.example .env
+# Ensure .env exists
+if [ ! -f /var/www/html/.env ]; then
+    cp /var/www/html/.env.example /var/www/html/.env
 fi
 
-# Check concord.php
-if [ ! -f config/concord.php ]; then
-    echo "⚙️  Creating config/concord.php..."
-    cp vendor/konekt/concord/config/config.php config/concord.php
-fi
+# Composer install
+composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Install Composer dependencies (nếu cần)
-if [ ! -d vendor ]; then
-    composer install --no-interaction --prefer-dist --optimize-autoloader
-fi
-
-# Chờ database sẵn sàng
+# Check database ready
 echo "🔄 Waiting for database..."
 until php artisan migrate:status > /dev/null 2>&1; do
   echo "⏳ Waiting for DB to be ready..."
   sleep 3
 done
 
-# Clear caches
+# Check config file concord.php
+if [ ! -f /var/www/html/config/concord.php ]; then
+    cp /var/www/html/vendor/konekt/concord/config/config.php /var/www/html/config/concord.php
+fi
+
+# Fix APP_URL if needed
+sed -i "s|http://bagisto-production-e2fd.up.railway.app|https://bagisto-production-e2fd.up.railway.app|g" /var/www/html/config/app.php
+
+# Laravel optimize
 php artisan config:clear
 php artisan cache:clear
 php artisan route:clear
 php artisan view:clear
 php artisan clear-compiled
-
-# Optimize app
 php artisan optimize
 
-# Storage symlink
+# Storage link
 php artisan storage:link
 
-# Generate app key nếu chưa có
-if ! grep -q "^APP_KEY=base64:" .env; then
-    echo "🔑 Generating app key..."
-    php artisan key:generate --force
-fi
+# Generate app key
+php artisan key:generate --force
 
-# Publish vendor assets
+# Publish vendor
 php artisan vendor:publish --all --force
 php artisan bagisto:publish
-
-# Update URL trong app.php nếu cần (nên để tự động theo biến môi trường, nhưng bạn đang hardcode thì sửa luôn)
-sed -i "s|http://bagisto-production-e2fd.up.railway.app|https://bagisto-production-e2fd.up.railway.app|g" config/app.php
 
 # Migrate database
 php artisan migrate --force
 
-# Final permissions fix
-chown -R www-data:www-data /var/www/html
-
-# Start Apache
-echo "🚀 Starting Apache..."
+# Start apache
 exec apache2-foreground
