@@ -51,7 +51,7 @@ RUN sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf && \
 # Copy source code
 COPY . /var/www/html/
 
-# Phân quyền
+# Phân quyền (thêm phần kiểm tra thư mục logs)
 RUN chown -R www-data:www-data /var/www/html && chmod -R 775 /var/www/html
 
 # Laravel setup
@@ -59,7 +59,9 @@ WORKDIR /var/www/html
 
 # Cấp quyền cho thư mục storage và logs
 RUN chown -R www-data:www-data /var/www/html/storage && \
-    chmod -R 775 /var/www/html/storage
+    chmod -R 775 /var/www/html/storage && \
+    chown -R www-data:www-data /var/www/html/storage/logs && \
+    chmod -R 775 /var/www/html/storage/logs
     
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
