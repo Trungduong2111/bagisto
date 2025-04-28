@@ -6,6 +6,7 @@ ARG APP_ENV=production
 ARG APP_URL=https://shop-production-e1a9.up.railway.app
 ENV APP_ENV=${APP_ENV}
 ENV APP_URL=${APP_URL}
+ENV PORT=8080
 
 # Mirrors nhanh hơn (optional)
 RUN echo "deb http://ftp.jp.debian.org/debian bookworm main" > /etc/apt/sources.list && \
@@ -42,6 +43,11 @@ RUN npm install -g npx
 COPY ./.config/apache.conf /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+# Update Apache to listen on dynamic PORT
+RUN sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf && \
+    sed -i "s/:80>/:${PORT}>/" /etc/apache2/sites-available/000-default.conf
+    
 # Copy source code
 COPY . /var/www/html/
 
@@ -72,4 +78,4 @@ RUN if [ ! -f .env ]; then cp .env.example .env; fi
 # Entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
 
-EXPOSE 80
+EXPOSE ${PORT}
