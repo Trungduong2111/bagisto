@@ -38,44 +38,37 @@
 
 set -e
 
-# Đặt permission đúng cho storage và cache
+# Đảm bảo thư mục logs và các thư mục khác tồn tại
+mkdir -p /var/www/html/storage/logs
+mkdir -p /var/www/html/storage/framework/sessions
+mkdir -p /var/www/html/storage/framework/views
+mkdir -p /var/www/html/storage/framework/cache
+mkdir -p /var/www/html/bootstrap/cache
+
+# Tạo file log nếu chưa tồn tại
+touch /var/www/html/storage/logs/laravel.log
+
+# Cấp quyền đúng cho cả thư mục và file
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Nếu là lần chạy đầu tiên hoặc cần migrate DB
-if [ ! -f /var/www/html/storage/installed ]; then
-    # Generate app key nếu chưa có
-    php artisan key:generate --force
-    
-    # Clear caches
-    php artisan config:clear
-    php artisan cache:clear
-    php artisan view:clear
-    
-    # Tạo symbolic link storage
-    php artisan storage:link
-    
-    # Migrate database nếu cần
-    php artisan migrate --force
-    
-    # Publish vendor assets nếu cần
-    php artisan vendor:publish --all --force
-    
-    # Đánh dấu đã cài đặt
-    touch /var/www/html/storage/installed
-fi
-
-# Fix quyền một lần nữa để chắc chắn
-find /var/www/html/storage -type d -exec chmod 775 {} \;
-find /var/www/html/storage -type f -exec chmod 664 {} \;
-
-# Đảm bảo file log có thể ghi được
-touch /var/www/html/storage/logs/laravel.log
-chown www-data:www-data /var/www/html/storage/logs/laravel.log
 chmod 664 /var/www/html/storage/logs/laravel.log
 
-# Optimize
-php artisan optimize:clear
+# Kiểm tra file concord.php
+if [ ! -f /var/www/html/config/concord.php ]; then
+    cp /var/www/html/vendor/konekt/concord/config/config.php /var/www/html/config/concord.php
+fi
+
+# Clear cache để đảm bảo cấu hình mới được áp dụng
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+
+# Tạo symlink cho storage
+php artisan storage:link
+
+# Tạo app key nếu chưa có
+php artisan key:generate --force
 
 # Khởi động Apache
-apache2-foreground
+exec apache2-foreground
