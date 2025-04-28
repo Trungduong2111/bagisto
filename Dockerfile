@@ -39,7 +39,7 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 RUN npm install -g npx
 
 # Apache config
-COPY ./.configs/apache.conf /etc/apache2/sites-available/000-default.conf
+COPY ./.config/apache.conf /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
 
 # Copy source code
