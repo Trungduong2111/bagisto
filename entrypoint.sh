@@ -26,5 +26,12 @@ php artisan storage:link
 php artisan migrate --force
 php artisan vendor:publish --all --force
 
+# **Thêm lệnh migrate ở đây để đảm bảo cơ sở dữ liệu được cập nhật**
+echo "🔄 Running migrations..."
+php artisan migrate --force
+
+# Publish vendor assets
+php artisan vendor:publish --all --force
+
 # Start Apache
 exec apache2-foreground
