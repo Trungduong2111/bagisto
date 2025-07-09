@@ -1,154 +1,460 @@
-<p align="center">
-    <a href="http://www.bagisto.com"><img src="https://bagisto.com/wp-content/themes/bagisto/images/logo.png" alt="Total Downloads"></a>
-</p>
+# Bagisto E-commerce Platform - Installation & Setup Guide
 
-<p align="center">
-    <a href="https://packagist.org/packages/bagisto/bagisto"><img src="https://poser.pugx.org/bagisto/bagisto/d/total.svg" alt="Total Downloads"></a>
-    <a href="https://packagist.org/packages/bagisto/bagisto"><img src="https://poser.pugx.org/bagisto/bagisto/v/stable.svg" alt="Latest Stable Version"></a>
-    <a href="https://packagist.org/packages/bagisto/bagisto"><img src="https://poser.pugx.org/bagisto/bagisto/license.svg" alt="License"></a>
-    <a href="#backers"><img src="https://opencollective.com/bagisto/backers/badge.svg" alt="Backers on Open Collective"></a>
-    <a href="#sponsors"><img src="https://opencollective.com/bagisto/sponsors/badge.svg" alt="Sponsors on Open Collective"></a>
-    <a href="https://www.codetriage.com/bagisto/bagisto"><img src="https://www.codetriage.com/bagisto/bagisto/badges/users.svg" alt="Open Source Helpers"></a>
-</p>
+## 📋 Table of Contents
+- [Overview](#overview)
+- [System Requirements](#system-requirements)
+- [Installation Methods](#installation-methods)
+- [Quick Start](#quick-start)
+- [Configuration](#configuration)
+- [Development Setup](#development-setup)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
 
-<p align="center">
-    <a href="https://twitter.com/intent/follow?screen_name=bagistoshop"><img src="https://img.shields.io/twitter/follow/bagistoshop?style=social"></a>
-    <a href="https://www.youtube.com/channel/UCbrfqnhyiDv-bb9QuZtonYQ"><img src="https://img.shields.io/youtube/channel/subscribers/UCbrfqnhyiDv-bb9QuZtonYQ?style=social"></a>
-</p>
+## 🚀 Overview
 
-<p align="center">
-    ➡️ <a href="https://bagisto.com/en/">Website</a> | <a href="https://devdocs.bagisto.com/">Documentation</a> | <a href="https://webkul.com/blog/laravel-ecommerce-website/">Installation Guide</a> | <a href="https://devdocs.bagisto.com/2.2/introduction/docker.html">Docker Installation</a>  | <a href="https://forums.bagisto.com/">Forums</a> | <a href="https://www.facebook.com/groups/bagisto/">Community</a> ⬅️
-</p>
+Bagisto is a hand-tailored E-commerce framework built on some of the hottest opensource technologies such as Laravel (a PHP framework) and Vue.js (a progressive JavaScript framework).
 
+**Key Features:**
+- Multi-Channel, Multi-Currency, Multi-Locale
+- Built-in REST API
+- Easy theme customization
+- Responsive design
+- SEO friendly
+- Admin dashboard
+- Customer management
+- Order management
+- Inventory management
 
-<p align="center" style="display: inline;">
-    <img class="flag-img" src="https://flagicons.lipis.dev/flags/4x3/ar.svg" alt="Arabic" width="24" height="24">
-    <img class="flag-img" src="https://flagicons.lipis.dev/flags/4x3/de.svg" alt="German" width="24" height="24">
-    <img class="flag-img" src="https://flagicons.lipis.dev/flags/4x3/us.svg" alt="English" width="24" height="24">
-    <img class="flag-img" src="https://flagicons.lipis.dev/flags/4x3/es.svg" alt="Spanish" width="24" height="24">
-    <img class="flag-img" src="https://flagicons.lipis.dev/flags/4x3/ir.svg" alt="Persian" width="24" height="24">
-    <img class="flag-img" src="https://flagicons.lipis.dev/flags/4x3/it.svg" alt="Italian" width="24" height="24">
-    <img class="flag-img" src="https://flagicons.lipis.dev/flags/4x3/nl.svg" alt="Dutch" width="24" height="24">
-    <img class="flag-img" src="https://flagicons.lipis.dev/flags/4x3/pl.svg" alt="Polish" width="24" height="24">
-    <img class="flag-img" src="https://flagicons.lipis.dev/flags/4x3/pt.svg" alt="Portuguese" width="24" height="24">
-    <img class="flag-img" src="https://flagicons.lipis.dev/flags/4x3/tr.svg" alt="Turkish" width="24" height="24">
-    <img class="flag-img" src="https://flagicons.lipis.dev/flags/4x3/eg.svg" alt="Egyptian" width="24" height="24">
-    <img class="flag-img" src="https://flagicons.lipis.dev/flags/4x3/cn.svg" alt="Chinese" width="24" height="24">
-</p>
+## 🔧 System Requirements
 
-<a href="https://www.youtube.com/watch?v=OHbte7hdxYU">
-    <img class="flag-img" src="https://raw.githubusercontent.com/bagisto/temp-media/master/bagisto-featured.png" alt="Chinese" width="100%">
-</a>
+Before installing Bagisto, ensure your system meets the following requirements:
 
-# Introduction
+### Server Requirements
+- **PHP**: >= 8.1
+- **MySQL**: >= 5.7.8 OR **MariaDB**: >= 10.3.2
+- **Composer**: >= 2.0
+- **Node.js**: >= 16.x
+- **NPM**: >= 8.x
 
-Bagisto is an opensource [laravel eCommerce](https://www.bagisto.com/) framework built on some of the hottest technologies such as [Laravel](https://laravel.com/) (a [PHP](https://secure.php.net/) framework) and [Vue.js](https://vuejs.org/) a progressive Javascript framework.
+### PHP Extensions
+```bash
+# Required PHP extensions
+- OpenSSL
+- PDO
+- Mbstring
+- Tokenizer
+- XML
+- Ctype
+- JSON
+- BCMath
+- GD
+- Zip
+- Intl
+- Exif
+```
 
-Bagisto can help you cut down your time, cost, and workforce for building online stores or migrating from physical stores to the ever-demanding online world. Your business—whether small or huge—can benefit. The best part, it's straightforward to set it up!
+### Optional Requirements
+- **Redis**: For caching and session storage
+- **Elasticsearch**: For advanced search functionality
+- **Supervisor**: For queue management
 
-![enter image description here](https://raw.githubusercontent.com/bagisto/temp-media/master/stats.png)
+## 📦 Installation Methods
 
-# Getting Started
+### Method 1: Using Composer (Recommended)
 
-![enter image description here](https://raw.githubusercontent.com/bagisto/temp-media/master/geting-starded.png)
+```bash
+# Create new Bagisto project
+composer create-project bagisto/bagisto bagisto
 
-[Install Bagisto](https://webkul.com/blog/laravel-ecommerce-website/) with or without Composer (Check [Requirement Details](https://bagisto.com/en/download/))
+# Navigate to project directory
+cd bagisto
 
-Follow the [Getting Started with Bagisto](https://www.youtube.com/watch?v=s_DhQrjK8Tw&list=PLe30vg_FG4OS3BU8rHUKQZ2mnX45xwSMc) Tutorial
+# Set proper permissions
+chmod -R 755 storage bootstrap/cache
+```
 
-You can browse through the Free [Live Demo](https://demo.bagisto.com/)
+### Method 2: Clone from GitHub
 
-# Accelerate Your Online Store Launch with the Bagisto Starter Pack!
+```bash
+# Clone the repository
+git clone https://github.com/bagisto/bagisto.git
 
-Empower your e-commerce journey with the [Bagisto Starter Pack](https://store.webkul.com/bagisto-starter-pack.html), streamlining setup and integration for a seamless online store launch. Get ready to unlock success in the digital marketplace! 
+# Navigate to project directory
+cd bagisto
 
-# Headless Commerce
+# Install dependencies
+composer install
 
-The power of headless laravel commerce now comes to Bagisto enabling you to experience seamless and easily scalable storefront performance. Backed by some of the hottest tech stacks (Vue and React), Bagisto commerce can now be used to build powerful headless commerce solutions offering blazing-fast speed and easy customization powered by Vue Storefront and Next.js
+# Set proper permissions
+chmod -R 755 storage bootstrap/cache
+```
 
-## Vue Storefront
+### Method 3: Using Docker
 
-![enter image description here](https://raw.githubusercontent.com/bagisto/temp-media/master/vue.png)
+```bash
+# Clone the repository
+git clone https://github.com/bagisto/bagisto.git
+cd bagisto
 
-Vue Storefront 2 integration for Bagisto: [https://github.com/bagisto/vuestorefront](https://github.com/bagisto/vuestorefront)
+# Run with Docker Compose
+docker-compose up -d
 
-## Next.js Commerce
+# Access the application at http://localhost
+```
 
-![enter image description here](https://raw.githubusercontent.com/bagisto/temp-media/master/next.png)
+## 🏁 Quick Start
 
-Develop and deploy your next headless commerce storefronts with Next JS and Bagisto: [https://github.com/bagisto/nextjs-commerce](https://github.com/bagisto/nextjs-commerce)
+### 1. Environment Configuration
 
-# Open Source Mobile eCommerce
+```bash
+# Copy environment file
+cp .env.example .env
 
-Revolutionize Your Online Store with Bagisto's Open Source eCommerce Mobile 
+# Generate application key
+php artisan key:generate
+```
 
-![enter image description here](https://raw.githubusercontent.com/bagisto/temp-media/master/open-source-ecommerce-mobile.png)
+### 2. Database Configuration
 
-Mobile eCommerce powered by Flutter & Laravel: https://github.com/bagisto/opensource-ecommerce-mobile-app
+Edit `.env` file with your database credentials:
 
-# AI Powered eCommerce
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=bagisto
+DB_USERNAME=root
+DB_PASSWORD=your_password
+```
 
-You can integrate popular large language models like GPT-4, Gemini, Mistral, and LLaMA 3, Grok (xAI), and Deepseek to build [AI-powered eCommerce](https://bagisto.com/en/extensions/laravel-chatbot-using-openai-chatgpt-llm/) applications with Bagisto. Some of the popular use cases where you can make use of LLMs to build AI apps are chatbot, automated product descriptions, customer support, search, and recommendations.
+### 3. Create Database
 
-![enter image description here](https://raw.githubusercontent.com/bagisto/temp-media/master/ai_powered_ecommerce.png)
+```bash
+# Create database (MySQL)
+mysql -u root -p
+CREATE DATABASE bagisto;
+exit
+```
 
-You can incorporate LLM API with your bagisto applications to send and receive queries and ensure proper error handling and rate limiting to prevent overuse of the API
+### 4. Install Bagisto
 
-# Decentralised eCommerce
+```bash
+# Run the installation command
+php artisan bagisto:install
 
-Build [decentralised applications](https://bagisto.com/en/services/blockchain-commerce/) with Bagisto on popular blockchains like Ethereum and Solana by integrating smart contracts with the eCommerce platform. You can have decentralised marketplaces, [NFT marketplaces](https://bagisto.com/en/nft-marketplace/), and decentralised e-signing with the laravel eCommerce system.
+# Or run step by step
+php artisan migrate
+php artisan db:seed
+php artisan storage:link
+php artisan optimize:clear
+```
 
-![enter image description here](https://raw.githubusercontent.com/bagisto/temp-media/master/decentralised-ecommerce.png)
+### 5. Install Frontend Dependencies
 
-# Commerce For Every Need
+```bash
+# Install Node.js dependencies
+npm install
 
-![enter image description here](https://raw.githubusercontent.com/bagisto/temp-media/master/every-need.png)
+# Build assets for development
+npm run dev
 
-With Bagisto, you can easily create use cases for various commerce needs like Marketplaces, PWA, Native Mobile Apps, Multi-Tenants systems, Blockchain and many more.
+# Or build for production
+npm run build
+```
 
-# Built In Extensions
+### 6. Start the Application
 
-![enter image description here](https://raw.githubusercontent.com/bagisto/temp-media/master/built_in_extension.png)
+```bash
+# Start development server
+php artisan serve
 
-Make use of 100+ Bagisto pre-built extensions from [Bagisto Extension Markeptlace](https://bagisto.com/en/extensions/)
+# Access your application at:
+# Frontend: http://localhost:8000
+# Admin Panel: http://localhost:8000/admin
+```
 
-# Community
+## ⚙️ Configuration
 
-![enter image description here](https://raw.githubusercontent.com/bagisto/temp-media/master/community.png)
+### Default Admin Credentials
+After installation, you can access the admin panel with:
+- **Email**: `admin@example.com`
+- **Password**: `admin123`
 
-Get Bagisto support on [Facebook Group](https://www.facebook.com/groups/bagisto) and [Forum](https://forums.bagisto.com/)
-Would like to help us build the most developer-friendly E-Commerce platform? Start by reading our [Contributing Guide](https://github.com/bagisto/bagisto/blob/master/.github/CONTRIBUTING.md)!
+### Environment Variables
 
-# License
-Bagisto is a fully open-source Laravel eCommerce framework that will always remain free under the [MIT License](https://github.com/bagisto/bagisto/blob/2.3/LICENSE).
+Key environment variables in `.env` file:
 
-# Security Vulnerabilities
-If you think that you have found a security issue in Bagisto, please do not use the issue tracker and do not post it publicly. Instead, all security issues must be sent to [mailto:support@bagisto.com](mailto:support@bagisto.com).
+```env
+# Application
+APP_NAME=Bagisto
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
 
-# Contributors
+# Database
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=bagisto
+DB_USERNAME=root
+DB_PASSWORD=
 
-This project is on [Open Collective](https://opencollective.com/bagisto), and it exists thanks to the people who contribute.
+# Mail Configuration
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-password
+MAIL_ENCRYPTION=tls
 
-<a href="https://github.com/bagisto/bagisto/graphs/contributors"><img src="https://opencollective.com/bagisto/contributors.svg?width=890&button=false"/></a>
+# Cache & Session
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+QUEUE_CONNECTION=sync
 
-# Backers
+# Redis (Optional)
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+```
 
-Thank you to all our backers! 🙏
+### File Permissions
 
-<a href="https://opencollective.com/bagisto#contributors" target="_blank"><img src="https://opencollective.com/bagisto/backers.svg?width=890"></a>
+```bash
+# Set proper permissions
+sudo chown -R www-data:www-data storage bootstrap/cache
+sudo chmod -R 775 storage bootstrap/cache
 
-# Sponsors
+# Or for development
+chmod -R 777 storage bootstrap/cache
+```
 
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website.
+## 🛠️ Development Setup
 
-<div>
-    <a href="https://opencollective.com/bagisto/contribute/sponsor-7372/checkout" target="_blank">
-        <img src="https://images.opencollective.com/static/images/become_sponsor.svg">
-    </a>
-</div>
+### 1. Enable Debug Mode
 
-<kbd>
-    <a href="http://e.ventures/" target="_blank">
-        <img src="https://images.opencollective.com/e-ventures1/7d61db2/logo.png" height="75">
-    </a>
-</kbd>
+```env
+APP_DEBUG=true
+APP_ENV=local
+```
+
+### 2. Install Development Dependencies
+
+```bash
+# Install PHP dev dependencies
+composer install --dev
+
+# Install Node.js dev dependencies
+npm install --dev
+```
+
+### 3. Run Development Tools
+
+```bash
+# Watch for file changes
+npm run watch
+
+# Run tests
+php artisan test
+
+# Clear caches
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+```
+
+### 4. Queue Management
+
+```bash
+# Start queue worker
+php artisan queue:work
+
+# For development, restart workers on code changes
+php artisan queue:restart
+```
+
+### 5. Generate Sample Data
+
+```bash
+# Generate sample data for development
+php artisan db:seed --class=DatabaseSeeder
+```
+
+## 🔧 Advanced Configuration
+
+### Multi-Channel Setup
+
+```bash
+# Create additional channels via admin panel
+# Or via command line
+php artisan bagisto:channel:create
+```
+
+### Multi-Currency Configuration
+
+```php
+// Configure currencies in admin panel
+// Admin > Settings > Currencies
+```
+
+### Search Configuration (Elasticsearch)
+
+```env
+SCOUT_DRIVER=elasticsearch
+ELASTICSEARCH_HOST=localhost:9200
+```
+
+```bash
+# Install Elasticsearch driver
+composer require tamayo/laravel-scout-elastic
+
+# Index products
+php artisan scout:import "Webkul\Product\Models\Product"
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### 1. Permission Errors
+```bash
+sudo chown -R www-data:www-data .
+sudo chmod -R 775 storage bootstrap/cache
+```
+
+#### 2. Composer Memory Limit
+```bash
+php -d memory_limit=-1 /usr/local/bin/composer install
+```
+
+#### 3. Node.js Issues
+```bash
+# Clear npm cache
+npm cache clean --force
+
+# Delete node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
+
+#### 4. Database Connection Error
+```bash
+# Check database credentials in .env
+# Ensure database exists
+# Check if MySQL service is running
+sudo systemctl status mysql
+```
+
+#### 5. Storage Link Issues
+```bash
+# Remove existing link and recreate
+rm public/storage
+php artisan storage:link
+```
+
+### Performance Optimization
+
+```bash
+# Cache configurations
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Optimize autoloader
+composer dump-autoload --optimize
+
+# Enable OPcache in php.ini
+opcache.enable=1
+opcache.memory_consumption=256
+opcache.max_accelerated_files=20000
+```
+
+## 🚀 Production Deployment
+
+### 1. Environment Setup
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://yourdomain.com
+```
+
+### 2. Optimize for Production
+
+```bash
+# Install production dependencies
+composer install --optimize-autoloader --no-dev
+
+# Build production assets
+npm run build
+
+# Cache configurations
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Optimize composer autoloader
+composer dump-autoload --optimize
+```
+
+### 3. Web Server Configuration
+
+#### Apache Configuration
+```apache
+<VirtualHost *:80>
+    DocumentRoot /path/to/bagisto/public
+    ServerName yourdomain.com
+    
+    <Directory /path/to/bagisto/public>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+```
+
+#### Nginx Configuration
+```nginx
+server {
+    listen 80;
+    server_name yourdomain.com;
+    root /path/to/bagisto/public;
+    
+    index index.php;
+    
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+```
+
+## 📚 Additional Resources
+
+- **Official Documentation**: https://bagisto.com/en/docs/
+- **Community Forum**: https://forums.bagisto.com/
+- **GitHub Repository**: https://github.com/bagisto/bagisto
+- **Video Tutorials**: https://www.youtube.com/channel/UCbrWCUWBoyehUuCqbZdXY9Q
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## 📄 License
+
+Bagisto is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+---
+
+**Happy Coding! 🎉**
+
+For more detailed information, visit the [official Bagisto documentation](https://bagisto.com/en/docs/).
