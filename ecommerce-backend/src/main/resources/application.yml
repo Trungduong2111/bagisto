@@ -43,6 +43,18 @@ spring:
 # Application specific properties
 app:
   jwt:
+    # Access Token Configuration
+    access-token:
+      secret: myAccessTokenSecret123456789012345678901234567890
+      expiration: 900000 # 15 minutes in milliseconds
+    
+    # Refresh Token Configuration  
+    refresh-token:
+      secret: myRefreshTokenSecret123456789012345678901234567890
+      expiration: 604800000 # 7 days in milliseconds
+      max-tokens-per-user: 5 # Maximum refresh tokens per user
+    
+    # Backward compatibility
     secret: mySecretKey123456789012345678901234567890
     expiration: 86400000 # 24 hours in milliseconds
     
@@ -136,6 +148,14 @@ spring:
     
 app:
   jwt:
+    access-token:
+      secret: ${JWT_ACCESS_TOKEN_SECRET:myProductionAccessTokenSecret123456789012345678901234567890}
+      expiration: ${JWT_ACCESS_TOKEN_EXPIRATION:900000}
+    refresh-token:
+      secret: ${JWT_REFRESH_TOKEN_SECRET:myProductionRefreshTokenSecret123456789012345678901234567890}
+      expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:604800000}
+      max-tokens-per-user: ${JWT_MAX_TOKENS_PER_USER:5}
+    # Backward compatibility
     secret: ${JWT_SECRET:myProductionSecretKey123456789012345678901234567890}
     expiration: ${JWT_EXPIRATION:86400000}
 

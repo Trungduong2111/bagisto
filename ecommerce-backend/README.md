@@ -104,8 +104,12 @@ mvn spring-boot:run -Dspring-boot.run.profiles=prod
 
 ### Authentication Endpoints
 ```
-POST /api/auth/register     - Đăng ký tài khoản
-POST /api/auth/login        - Đăng nhập
+POST /api/auth/register        - Đăng ký tài khoản
+POST /api/auth/login           - Đăng nhập (trả về access + refresh token)
+POST /api/auth/refresh-token   - Làm mới access token
+POST /api/auth/logout          - Đăng xuất (vô hiệu hóa refresh token)
+POST /api/auth/logout-all      - Đăng xuất khỏi tất cả thiết bị
+GET  /api/auth/me              - Lấy thông tin user hiện tại
 POST /api/auth/forgot-password - Quên mật khẩu
 POST /api/auth/reset-password  - Đặt lại mật khẩu
 POST /api/auth/verify-email    - Xác thực email
@@ -140,10 +144,60 @@ PATCH /api/orders/{id}/payment-status - Cập nhật trạng thái thanh toán (
 
 ## 🔐 Authentication
 
-API sử dụng JWT token để xác thực. Sau khi đăng nhập thành công, bạn sẽ nhận được token và cần gửi kèm trong header:
+API sử dụng JWT token với cơ chế **Access Token** và **Refresh Token** để xác thực:
 
+### Access Token & Refresh Token
+- **Access Token**: Có thời hạn ngắn (15 phút), dùng để xác thực các API requests
+- **Refresh Token**: Có thời hạn dài (7 ngày), dùng để tạo access token mới
+- **Token Rotation**: Mỗi lần refresh sẽ tạo refresh token mới và vô hiệu hóa token cũ
+
+### Cách sử dụng:
+
+1. **Đăng nhập** - Nhận cả access token và refresh token:
+```bash
+POST /api/auth/login
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+Response:
+{
+  "accessToken": "eyJ...",
+  "refreshToken": "abc123...",
+  "tokenType": "Bearer",
+  "expiresIn": 900,
+  "id": 1,
+  "email": "user@example.com",
+  ...
+}
 ```
-Authorization: Bearer <your-jwt-token>
+
+2. **Sử dụng Access Token** - Gửi kèm trong header:
+```
+Authorization: Bearer <your-access-token>
+```
+
+3. **Refresh Token** - Khi access token hết hạn:
+```bash
+POST /api/auth/refresh-token
+{
+  "refreshToken": "abc123..."
+}
+```
+
+4. **Logout** - Vô hiệu hóa refresh token:
+```bash
+POST /api/auth/logout
+{
+  "refreshToken": "abc123..."
+}
+```
+
+5. **Logout All Devices** - Vô hiệu hóa tất cả refresh tokens:
+```bash
+POST /api/auth/logout-all
+Authorization: Bearer <your-access-token>
 ```
 
 ## 👥 Tài khoản mặc định
