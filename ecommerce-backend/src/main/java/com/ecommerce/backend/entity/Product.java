@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SuperBuilder
 public class Product extends BaseEntity {
 
     @Column(name = "name", nullable = false)

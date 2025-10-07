@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Address extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

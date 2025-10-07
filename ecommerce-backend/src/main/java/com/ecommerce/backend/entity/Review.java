@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Review extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

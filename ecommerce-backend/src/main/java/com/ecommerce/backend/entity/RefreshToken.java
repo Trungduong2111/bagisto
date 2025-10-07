@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class RefreshToken extends BaseEntity {
 
     @Column(name = "token", nullable = false, unique = true, length = 500)
