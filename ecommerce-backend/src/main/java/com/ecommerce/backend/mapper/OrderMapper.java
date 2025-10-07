@@ -6,7 +6,7 @@ import com.ecommerce.backend.entity.*;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
-public abstract class OrderMapper {
+public interface OrderMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "orderNumber", ignore = true)
@@ -25,8 +25,8 @@ public abstract class OrderMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "deletedAt", ignore = true)
-    @Mapping(target = "orderItems", source = "orderItems", qualifiedByName = "mapOrderItems")
-    public abstract Order toEntity(OrderRequest request);
+    @Mapping(target = "orderItems", ignore = true)
+    Order toEntity(OrderRequest request);
 
     @Mapping(target = "canBeCancelled", expression = "java(order.canBeCancelled())")
     @Mapping(target = "isPaid", expression = "java(order.isPaid())")
@@ -34,34 +34,37 @@ public abstract class OrderMapper {
     @Mapping(target = "shippingFullName", expression = "java(order.getShippingFullName())")
     @Mapping(target = "billingFullName", expression = "java(order.getBillingFullName())")
     @Mapping(target = "shippingFullAddress", expression = "java(order.getShippingFullAddress())")
-    public abstract OrderResponse toResponse(Order order);
+    OrderResponse toResponse(Order order);
 
     @Mapping(target = "fullName", expression = "java(user.getFullName())")
-    public abstract OrderResponse.UserResponse toUserResponse(User user);
+    OrderResponse.UserResponse toUserResponse(User user);
 
-    public abstract OrderResponse.OrderItemResponse toOrderItemResponse(OrderItem orderItem);
+    OrderResponse.OrderItemResponse toOrderItemResponse(OrderItem orderItem);
 
     @Mapping(target = "id", source = "product.id")
     @Mapping(target = "name", source = "product.name")
     @Mapping(target = "sku", source = "product.sku")
     @Mapping(target = "slug", source = "product.slug")
-    public abstract OrderResponse.OrderItemResponse.ProductResponse toOrderItemProductResponse(Product product);
+    OrderResponse.OrderItemResponse.ProductResponse toOrderItemProductResponse(Product product);
 
-    @Mapping(target = "displayName", expression = "java(variant.getDisplayName())")
-    public abstract OrderResponse.OrderItemResponse.ProductVariantResponse toOrderItemVariantResponse(ProductVariant variant);
+    @Mapping(target = "displayName", expression = "java(variant != null ? variant.getDisplayName() : null)")
+    OrderResponse.OrderItemResponse.ProductVariantResponse toOrderItemVariantResponse(ProductVariant variant);
 
-    @Named("mapOrderItems")
-    protected java.util.List<OrderItem> mapOrderItems(java.util.List<OrderRequest.OrderItemRequest> orderItemRequests) {
-        if (orderItemRequests == null) {
-            return null;
+    // Custom method to handle order items mapping
+    default Order mapOrderWithItems(OrderRequest request) {
+        Order order = toEntity(request);
+        
+        if (request.getOrderItems() != null) {
+            java.util.List<OrderItem> orderItems = request.getOrderItems().stream()
+                    .map(this::mapOrderItem)
+                    .collect(java.util.stream.Collectors.toList());
+            order.setOrderItems(orderItems);
         }
         
-        return orderItemRequests.stream()
-                .map(this::mapOrderItem)
-                .collect(java.util.stream.Collectors.toList());
+        return order;
     }
 
-    private OrderItem mapOrderItem(OrderRequest.OrderItemRequest request) {
+    default OrderItem mapOrderItem(OrderRequest.OrderItemRequest request) {
         OrderItem orderItem = new OrderItem();
         
         // Set product

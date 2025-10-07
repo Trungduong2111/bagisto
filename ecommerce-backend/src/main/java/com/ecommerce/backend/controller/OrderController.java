@@ -124,7 +124,7 @@ public class OrderController {
     public ResponseEntity<OrderResponse> createOrder(
             @Valid @RequestBody OrderRequest request,
             @AuthenticationPrincipal User user) {
-        Order order = orderMapper.toEntity(request);
+        Order order = orderMapper.mapOrderWithItems(request);
         order.setUser(user);
         Order savedOrder = orderService.createOrder(order);
         return ResponseEntity.ok(orderMapper.toResponse(savedOrder));
