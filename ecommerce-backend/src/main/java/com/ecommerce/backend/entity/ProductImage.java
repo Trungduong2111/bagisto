@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 public class ProductImage extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

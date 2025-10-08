@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 public class ProductVariant extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
