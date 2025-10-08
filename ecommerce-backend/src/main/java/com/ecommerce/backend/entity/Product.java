@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 public class Product extends BaseEntity {
 
     @Column(name = "name", nullable = false)

@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 public class Category extends BaseEntity {
 
     @Column(name = "name", nullable = false)

@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 public class Order extends BaseEntity {
 
     @Column(name = "order_number", nullable = false, unique = true)
