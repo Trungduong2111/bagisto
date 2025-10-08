@@ -10,13 +10,10 @@ spring:
   application:
     name: ecommerce-backend
   
-  profiles:
-    active: dev
-  
   datasource:
     url: jdbc:mysql://localhost:3306/ecommerce_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
-    password: password
+    password: password  # ⚠️ THAY BẰNG PASSWORD MYSQL CỦA BẠN
     driver-class-name: com.mysql.cj.jdbc.Driver
     
   jpa:
@@ -30,6 +27,11 @@ spring:
         use_sql_comments: true
     open-in-view: false
     defer-datasource-initialization: true
+    
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
     
   jackson:
     serialization:
@@ -103,40 +105,6 @@ springdoc:
     filter: true
 
 ---
-# Development profile
-spring:
-  config:
-    activate:
-      on-profile: dev
-  
-  datasource:
-    url: jdbc:h2:mem:ecommerce_dev
-    username: sa
-    password: 
-    driver-class-name: org.h2.Driver
-    
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-      
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-    defer-datasource-initialization: true
-    
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:data-h2.sql
-    
-logging:
-  level:
-    root: INFO
-    com.ecommerce.backend: DEBUG
-
----
 # Production profile
 spring:
   config:
@@ -153,6 +121,10 @@ spring:
       ddl-auto: validate
     show-sql: false
     
+  sql:
+    init:
+      mode: never  # Don't auto-load data in production
+    
 app:
   jwt:
     access-token:
@@ -162,9 +134,6 @@ app:
       secret: ${JWT_REFRESH_TOKEN_SECRET:myProductionRefreshTokenSecret123456789012345678901234567890}
       expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:604800000}
       max-tokens-per-user: ${JWT_MAX_TOKENS_PER_USER:5}
-    # Backward compatibility
-    secret: ${JWT_SECRET:myProductionSecretKey123456789012345678901234567890}
-    expiration: ${JWT_EXPIRATION:86400000}
 
 logging:
   level:
@@ -172,26 +141,3 @@ logging:
     com.ecommerce.backend: INFO
   file:
     name: /var/log/ecommerce-backend.log
-
----
-# Test profile
-spring:
-  config:
-    activate:
-      on-profile: test
-      
-  datasource:
-    url: jdbc:h2:mem:ecommerce_test
-    username: sa
-    password: 
-    driver-class-name: org.h2.Driver
-    
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: false
-    
-logging:
-  level:
-    root: WARN
-    com.ecommerce.backend: INFO
