@@ -14,6 +14,13 @@ INSERT INTO categories (name, description, slug, image_url, is_active, sort_orde
 ('Women''s Clothing', 'Clothing for women', 'womens-clothing', '/images/categories/womens-clothing.jpg', true, 2, 2, NOW(), NOW()),
 ('Fiction', 'Fiction books', 'fiction', '/images/categories/fiction.jpg', true, 1, 3, NOW(), NOW());
 
+-- Insert sample users (password is 'password123' encoded with BCrypt)
+INSERT INTO users (first_name, last_name, email, password, phone, role, status, email_verified, created_at, updated_at) VALUES
+('Admin', 'User', 'admin@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', '+1234567890', 'SUPER_ADMIN', 'ACTIVE', true, NOW(), NOW()),
+('John', 'Doe', 'john.doe@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', '+1234567891', 'CUSTOMER', 'ACTIVE', true, NOW(), NOW()),
+('Jane', 'Smith', 'jane.smith@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', '+1234567892', 'CUSTOMER', 'ACTIVE', true, NOW(), NOW()),
+('Store', 'Manager', 'manager@example.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', '+1234567893', 'ADMIN', 'ACTIVE', true, NOW(), NOW());
+
 -- Insert sample products
 INSERT INTO products (name, description, short_description, sku, price, compare_price, stock_quantity, min_stock_level, status, is_featured, slug, category_id, created_at, updated_at) VALUES
 ('iPhone 14 Pro', 'Latest iPhone with advanced camera system and A16 Bionic chip', 'Latest iPhone with advanced features', 'IPHONE-14-PRO', 999.00, 1099.00, 50, 5, 'ACTIVE', true, 'iphone-14-pro', 6, NOW(), NOW()),
