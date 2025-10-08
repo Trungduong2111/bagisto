@@ -31,8 +31,29 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmailAndDeletedAtIsNull(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        log.debug("Attempting to load user by email: {}", email);
+        
+        Optional<User> userOpt = userRepository.findByEmailAndDeletedAtIsNull(email);
+        if (userOpt.isEmpty()) {
+            // Try without deleted check as fallback
+            userOpt = userRepository.findByEmail(email);
+            if (userOpt.isEmpty()) {
+                log.error("User not found with email: {}", email);
+                throw new UsernameNotFoundException("User not found with email: " + email);
+            } else {
+                User user = userOpt.get();
+                if (user.isDeleted()) {
+                    log.error("User found but is deleted: {}", email);
+                    throw new UsernameNotFoundException("User account is deleted: " + email);
+                }
+            }
+        }
+        
+        User user = userOpt.get();
+        log.debug("User found: {} with status: {} and emailVerified: {}", 
+                user.getEmail(), user.getStatus(), user.getEmailVerified());
+        
+        return user;
     }
 
     public User createUser(User user) {
