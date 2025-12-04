@@ -38,8 +38,34 @@ echo "🔄 Waiting for database connection..."
 MAX_RETRIES=30
 RETRY_COUNT=0
 
+# while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+#     if php artisan migrate:status > /dev/null 2>&1; then
+#         echo "✅ Database connected successfully!"
+#         break
+#     fi
+    
+#     RETRY_COUNT=$((RETRY_COUNT + 1))
+#     echo "⏳ Waiting for database... (Attempt $RETRY_COUNT/$MAX_RETRIES)"
+#     sleep 3
+# done
 while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-    if php artisan migrate:status > /dev/null 2>&1; then
+    # Sử dụng PHP để kiểm tra kết nối PDO
+    if php -r "
+    \$host = getenv('DB_HOST');
+    \$port = getenv('DB_PORT');
+    \$dbname = getenv('DB_DATABASE');
+    \$user = getenv('DB_USERNAME');
+    \$pass = getenv('DB_PASSWORD');
+    
+    try {
+        \$dsn = 'pgsql:host=' . \$host . ';port=' . \$port . ';dbname=' . \$dbname;
+        new PDO(\$dsn, \$user, \$pass, [PDO::ATTR_TIMEOUT => 3]);
+        echo '✅ Database connected successfully!';
+        exit(0);
+    } catch (PDOException \$e) {
+        exit(1);
+    }
+    " 2>/dev/null; then
         echo "✅ Database connected successfully!"
         break
     fi
@@ -48,7 +74,6 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
     echo "⏳ Waiting for database... (Attempt $RETRY_COUNT/$MAX_RETRIES)"
     sleep 3
 done
-
 if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
     echo "❌ Could not connect to database after $MAX_RETRIES attempts"
     exit 1
