@@ -10,7 +10,7 @@ ENV PORT=8080
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Update package lists and install dependencies
-# Note: Removed custom mirrors that were causing conflicts
+# Support both MySQL and PostgreSQL
 RUN apt-get update && apt-get install -y \
     git unzip zip ffmpeg \
     libzip-dev zlib1g-dev \
@@ -19,14 +19,15 @@ RUN apt-get update && apt-get install -y \
     gcc make autoconf pkg-config \
     libonig-dev curl \
     default-mysql-client \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# PHP extensions
+# PHP extensions (support both MySQL and PostgreSQL)
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && \
     docker-php-ext-install -j$(nproc) gd && \
     docker-php-ext-configure intl && \
     docker-php-ext-install -j$(nproc) intl && \
-    docker-php-ext-install -j$(nproc) bcmath calendar exif gmp mysqli pdo pdo_mysql zip
+    docker-php-ext-install -j$(nproc) bcmath calendar exif gmp mysqli pdo pdo_mysql pdo_pgsql pgsql zip
 
 # Install imagick
 RUN pecl install imagick && docker-php-ext-enable imagick
