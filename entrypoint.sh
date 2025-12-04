@@ -86,9 +86,9 @@ if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
 fi
 
 # ========== PHẦN CHẠY LỆNH ARTISAN - ĐẢM BẢO ĐÚNG THỨ TỰ ==========
-# 6. CHẠY MIGRATION TRƯỚC TIÊN (tạo bảng)
-echo "🗄️  Đang chạy database migrations..."
-php artisan migrate --force
+# # 6. CHẠY MIGRATION TRƯỚC TIÊN (tạo bảng)
+# echo "🗄️  Đang chạy database migrations..."
+# php artisan migrate --force
 
 # 7. Publish assets (nếu cần)
 echo "📦 Publishing vendor assets..."
