@@ -86,9 +86,9 @@ if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
 fi
 
 # ========== PHẦN CHẠY LỆNH ARTISAN - ĐẢM BẢO ĐÚNG THỨ TỰ ==========
-# # 6. CHẠY MIGRATION TRƯỚC TIÊN (tạo bảng)
-# echo "🗄️  Đang chạy database migrations..."
-# php artisan migrate --force
+# 6. CHẠY MIGRATION TRƯỚC TIÊN (tạo bảng)
+echo "🗄️  Đang chạy database migrations..."
+php artisan migrate --force
 
 # 8. CHỈ SAU KHI CÓ BẢNG MỚI XÓA CACHE
 echo "🧹 Xóa cache..."
@@ -98,13 +98,13 @@ php artisan route:clear
 php artisan view:clear
 
 # 7. PUBLISH ASSETS - Ưu tiên lệnh chuyên biệt của Bagisto
-echo "📦 Publishing Bagisto assets (ưu tiên)..."
-# Thử lệnh tối ưu của Bagisto trước, nếu không có thì dùng lệnh chung
-php artisan bagisto:publish --force 2>/dev/null || php artisan vendor:publish --all --force
+# echo "📦 Publishing Bagisto assets (ưu tiên)..."
+# # Thử lệnh tối ưu của Bagisto trước, nếu không có thì dùng lệnh chung
+# php artisan bagisto:publish --force 2>/dev/null || php artisan vendor:publish --all --force
 
-# 8. CHẠY DATABASE MIGRATION (BẮT BUỘC - Bỏ comment phần #6 cũ)
-echo "🗄️  Đang chạy database migrations..."
-php artisan migrate --force
+# # 8. CHẠY DATABASE MIGRATION (BẮT BUỘC - Bỏ comment phần #6 cũ)
+# echo "🗄️  Đang chạy database migrations..."
+# php artisan migrate --force
 
 # 9. Tối ưu hóa và hoàn tất
 echo "⚡ Tối ưu hóa ứng dụng..."
