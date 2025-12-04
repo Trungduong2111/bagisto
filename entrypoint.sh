@@ -90,16 +90,19 @@ fi
 # echo "🗄️  Đang chạy database migrations..."
 # php artisan migrate --force
 
-# 7. Publish assets (nếu cần)
-echo "📦 Publishing vendor assets..."
-php artisan vendor:publish --all --force 2>/dev/null || true
-
 # 8. CHỈ SAU KHI CÓ BẢNG MỚI XÓA CACHE
 echo "🧹 Xóa cache..."
 php artisan config:clear
 php artisan cache:clear  # Giờ không còn lỗi "relation cache does not exist"
 php artisan route:clear
 php artisan view:clear
+
+# 7. PUBLISH ASSETS - Ưu tiên lệnh chuyên biệt của Bagisto
+echo "📦 Publishing Bagisto assets (ưu tiên)..."
+# Thử lệnh tối ưu của Bagisto trước, nếu không có thì dùng lệnh chung
+php artisan bagisto:publish --force 2>/dev/null || php artisan vendor:publish --all --force
+
+
 
 # 9. Optimize và storage link
 echo "🔗 Tạo storage link..."
