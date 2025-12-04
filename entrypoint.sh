@@ -22,15 +22,26 @@ chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 chmod 664 /var/www/html/storage/logs/laravel.log
 
 # 3. Ensure .env exists
-if [ ! -f /var/www/html/.env ]; then
-    echo "📝 Copying .env.example to .env..."
-    cp /var/www/html/.env.example /var/www/html/.env
-fi
+# if [ ! -f /var/www/html/.env ]; then
+#     echo "📝 Copying .env.example to .env..."
+#     cp /var/www/html/.env.example /var/www/html/.env
+# fi
 
 # 4. Generate APP_KEY if not set
-if ! grep -q "^APP_KEY=base64:" /var/www/html/.env 2>/dev/null; then
+# if ! grep -q "^APP_KEY=base64:" /var/www/html/.env 2>/dev/null; then
+#     echo "🔑 Generating application key..."
+#     php artisan key:generate --force
+# fi
+
+if [ -z "${APP_KEY}" ] && ! grep -q "^APP_KEY=base64:" /var/www/html/.env 2>/dev/null; then
     echo "🔑 Generating application key..."
     php artisan key:generate --force
+    # Sau khi tạo, có thể xuất ra log để debug (không nên trong production)
+    # echo "Generated APP_KEY: $(grep '^APP_KEY=' /var/www/html/.env)"
+elif [ -n "${APP_KEY}" ]; then
+    echo "✅ APP_KEY đã được cung cấp qua biến môi trường."
+    # Có thể ghi giá trị từ biến môi trường vào file .env nếu cần thiết
+    # sed -i "s|^APP_KEY=.*|APP_KEY=${APP_KEY}|" /var/www/html/.env
 fi
 
 # 5. Wait for database connection
