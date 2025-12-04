@@ -102,13 +102,15 @@ echo "📦 Publishing Bagisto assets (ưu tiên)..."
 # Thử lệnh tối ưu của Bagisto trước, nếu không có thì dùng lệnh chung
 php artisan bagisto:publish --force 2>/dev/null || php artisan vendor:publish --all --force
 
+# 8. CHẠY DATABASE MIGRATION (BẮT BUỘC - Bỏ comment phần #6 cũ)
+echo "🗄️  Đang chạy database migrations..."
+php artisan migrate --force
 
-
-# 9. Optimize và storage link
+# 9. Tối ưu hóa và hoàn tất
+echo "⚡ Tối ưu hóa ứng dụng..."
+php artisan optimize
 echo "🔗 Tạo storage link..."
 php artisan storage:link --force 2>/dev/null || true
-echo "⚡ Tối ưu ứng dụng..."
-php artisan optimize
 
 # 11. Final permission check
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public
