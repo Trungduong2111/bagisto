@@ -21,36 +21,78 @@ chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 chmod 664 /var/www/html/storage/logs/laravel.log
 
-# 3. Ensure .env exists
-# if [ ! -f /var/www/html/.env ]; then
-#     echo "📝 Copying .env.example to .env..."
-#     cp /var/www/html/.env.example /var/www/html/.env
-# fi
-
-# 4. Generate APP_KEY if not set
-# if ! grep -q "^APP_KEY=base64:" /var/www/html/.env 2>/dev/null; then
-#     echo "🔑 Generating application key..."
-#     php artisan key:generate --force
-# fi
-
-if [ -z "${APP_KEY}" ] && ! grep -q "^APP_KEY=base64:" /var/www/html/.env 2>/dev/null; then
-    echo "🔑 Generating application key..."
-    php artisan key:generate --force
-    # Sau khi tạo, có thể xuất ra log để debug (không nên trong production)
-    # echo "Generated APP_KEY: $(grep '^APP_KEY=' /var/www/html/.env)"
-elif [ -n "${APP_KEY}" ]; then
-    echo "✅ APP_KEY đã được cung cấp qua biến môi trường."
-    # Có thể ghi giá trị từ biến môi trường vào file .env nếu cần thiết
-    # sed -i "s|^APP_KEY=.*|APP_KEY=${APP_KEY}|" /var/www/html/.env
+# 3. Tạo file .env CƠ SỞ nếu chưa có (chỉ để tránh lỗi)
+if [ ! -f /var/www/html/.env ]; then
+    echo "📝 Tạo file .env cơ sở..."
+    cp /var/www/html/.env.example /var/www/html/.env
 fi
 
-# 5. Wait for database connection
-echo "🔄 Waiting for database connection..."
-MAX_RETRIES=30
-RETRY_COUNT=0
+# # 4. Generate APP_KEY if not set
+# # if ! grep -q "^APP_KEY=base64:" /var/www/html/.env 2>/dev/null; then
+# #     echo "🔑 Generating application key..."
+# #     php artisan key:generate --force
+# # fi
 
+# if [ -z "${APP_KEY}" ] && ! grep -q "^APP_KEY=base64:" /var/www/html/.env 2>/dev/null; then
+#     echo "🔑 Generating application key..."
+#     php artisan key:generate --force
+#     # Sau khi tạo, có thể xuất ra log để debug (không nên trong production)
+#     # echo "Generated APP_KEY: $(grep '^APP_KEY=' /var/www/html/.env)"
+# elif [ -n "${APP_KEY}" ]; then
+#     echo "✅ APP_KEY đã được cung cấp qua biến môi trường."
+#     # Có thể ghi giá trị từ biến môi trường vào file .env nếu cần thiết
+#     # sed -i "s|^APP_KEY=.*|APP_KEY=${APP_KEY}|" /var/www/html/.env
+# fi
+
+# 4. XỬ LÝ APP_KEY - ƯU TIÊN BIẾN MÔI TRƯỜNG CAO NHẤT
+echo "🔐 Xử lý APP_KEY..."
+if [ -n "${APP_KEY}" ]; then
+    # TRƯỜNG HỢP 1: Đã set biến môi trường APP_KEY trong Dashboard -> DÙNG CÁI NÀY
+    echo "   ✅ Lấy APP_KEY từ biến môi trường Render."
+    # Cập nhật vào file .env vật lý để đảm bảo artisan commands hoạt động
+    sed -i "s|^APP_KEY=.*|APP_KEY=${APP_KEY}|" /var/www/html/.env
+elif grep -q '^APP_KEY=base64:' /var/www/html/.env 2>/dev/null; then
+    # TRƯỜNG HỢP 2: File .env đã có key hợp lệ -> Giữ nguyên
+    echo "   ℹ️  APP_KEY đã tồn tại trong file .env."
+else
+    # TRƯỜNG HỢP 3: Không có nguồn nào -> TẠO MỚI (chỉ dành cho local/dev)
+    echo "   ⚠️  Cảnh báo: Tạo APP_KEY mới. Trên production, hãy set biến APP_KEY trong Render Dashboard."
+    php artisan key:generate --force
+fi
+
+# # 5. Wait for database connection
+# echo "🔄 Waiting for database connection..."
+# MAX_RETRIES=30
+# RETRY_COUNT=0
+
+# # while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+# #     if php artisan migrate:status > /dev/null 2>&1; then
+# #         echo "✅ Database connected successfully!"
+# #         break
+# #     fi
+    
+# #     RETRY_COUNT=$((RETRY_COUNT + 1))
+# #     echo "⏳ Waiting for database... (Attempt $RETRY_COUNT/$MAX_RETRIES)"
+# #     sleep 3
+# # done
 # while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-#     if php artisan migrate:status > /dev/null 2>&1; then
+#     # Sử dụng PHP để kiểm tra kết nối PDO
+#     if php -r "
+#     \$host = getenv('DB_HOST');
+#     \$port = getenv('DB_PORT');
+#     \$dbname = getenv('DB_DATABASE');
+#     \$user = getenv('DB_USERNAME');
+#     \$pass = getenv('DB_PASSWORD');
+    
+#     try {
+#         \$dsn = 'pgsql:host=' . \$host . ';port=' . \$port . ';dbname=' . \$dbname;
+#         new PDO(\$dsn, \$user, \$pass, [PDO::ATTR_TIMEOUT => 3]);
+#         echo '✅ Database connected successfully!';
+#         exit(0);
+#     } catch (PDOException \$e) {
+#         exit(1);
+#     }
+#     " 2>/dev/null; then
 #         echo "✅ Database connected successfully!"
 #         break
 #     fi
@@ -59,60 +101,69 @@ RETRY_COUNT=0
 #     echo "⏳ Waiting for database... (Attempt $RETRY_COUNT/$MAX_RETRIES)"
 #     sleep 3
 # done
+
+# 5. KIỂM TRA KẾT NỐI DATABASE VỚI BIẾN MÔI TRƯỜNG
+echo "🔄 Kiểm tra kết nối database..."
+MAX_RETRIES=30
+RETRY_COUNT=0
 while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-    # Sử dụng PHP để kiểm tra kết nối PDO
+    # Đoạn script PHP này sẽ đọc BIẾN MÔI TRƯỜNG HỆ THỐNG trực tiếp
     if php -r "
+    // getenv() lấy trực tiếp từ biến môi trường hệ thống
     \$host = getenv('DB_HOST');
     \$port = getenv('DB_PORT');
     \$dbname = getenv('DB_DATABASE');
     \$user = getenv('DB_USERNAME');
     \$pass = getenv('DB_PASSWORD');
     
+    if (empty(\$host) || empty(\$user) || empty(\$pass)) {
+        echo 'ERROR: Thiếu biến môi trường kết nối database.';
+        exit(1);
+    }
+    
     try {
-        \$dsn = 'pgsql:host=' . \$host . ';port=' . \$port . ';dbname=' . \$dbname;
-        new PDO(\$dsn, \$user, \$pass, [PDO::ATTR_TIMEOUT => 3]);
-        echo '✅ Database connected successfully!';
+        \$dsn = 'pgsql:host=' . \$host . ';port=' . (\$port ?: '5432') . ';dbname=' . (\$dbname ?: 'postgres');
+        new PDO(\$dsn, \$user, \$pass, [PDO::ATTR_TIMEOUT => 5, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         exit(0);
     } catch (PDOException \$e) {
+        echo 'ERROR: ' . \$e->getMessage();
         exit(1);
     }
     " 2>/dev/null; then
-        echo "✅ Database connected successfully!"
+        echo "✅ Kết nối database thành công!"
         break
     fi
-    
     RETRY_COUNT=$((RETRY_COUNT + 1))
-    echo "⏳ Waiting for database... (Attempt $RETRY_COUNT/$MAX_RETRIES)"
+    echo "⏳ Đang thử lại... (Lần thứ $RETRY_COUNT/$MAX_RETRIES)"
     sleep 3
 done
+
 if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
-    echo "❌ Could not connect to database after $MAX_RETRIES attempts"
+    echo "❌ Không thể kết nối database sau $MAX_RETRIES lần thử."
+    echo "   Hãy kiểm tra các biến DB_HOST, DB_USERNAME, DB_PASSWORD trong Render Dashboard."
     exit 1
 fi
 
-# 6. Clear all caches
-echo "🧹 Clearing caches..."
-php artisan config:clear
-php artisan cache:clear
-php artisan route:clear
-php artisan view:clear
-php artisan clear-compiled
-
-# 7. Create storage link
-echo "🔗 Creating storage link..."
-php artisan storage:link || true  # Ignore error if link already exists
-
-# 8. Publish vendor assets
-echo "📦 Publishing vendor assets..."
-php artisan vendor:publish --all --force
-php artisan bagisto:publish || echo "⚠️  bagisto:publish not available, skipping..."
-
-# 9. Run database migrations
-echo "🗄️  Running database migrations..."
+# ========== PHẦN CHẠY LỆNH ARTISAN - ĐẢM BẢO ĐÚNG THỨ TỰ ==========
+# 6. CHẠY MIGRATION TRƯỚC TIÊN (tạo bảng)
+echo "🗄️  Đang chạy database migrations..."
 php artisan migrate --force
 
-# 10. Optimize application
-echo "⚡ Optimizing application..."
+# 7. Publish assets (nếu cần)
+echo "📦 Publishing vendor assets..."
+php artisan vendor:publish --all --force 2>/dev/null || true
+
+# 8. CHỈ SAU KHI CÓ BẢNG MỚI XÓA CACHE
+echo "🧹 Xóa cache..."
+php artisan config:clear
+php artisan cache:clear  # Giờ không còn lỗi "relation cache does not exist"
+php artisan route:clear
+php artisan view:clear
+
+# 9. Optimize và storage link
+echo "🔗 Tạo storage link..."
+php artisan storage:link --force 2>/dev/null || true
+echo "⚡ Tối ưu ứng dụng..."
 php artisan optimize
 
 # 11. Final permission check
