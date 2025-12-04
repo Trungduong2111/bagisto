@@ -27,23 +27,6 @@ if [ ! -f /var/www/html/.env ]; then
     cp /var/www/html/.env.example /var/www/html/.env
 fi
 
-# # 4. Generate APP_KEY if not set
-# # if ! grep -q "^APP_KEY=base64:" /var/www/html/.env 2>/dev/null; then
-# #     echo "🔑 Generating application key..."
-# #     php artisan key:generate --force
-# # fi
-
-# if [ -z "${APP_KEY}" ] && ! grep -q "^APP_KEY=base64:" /var/www/html/.env 2>/dev/null; then
-#     echo "🔑 Generating application key..."
-#     php artisan key:generate --force
-#     # Sau khi tạo, có thể xuất ra log để debug (không nên trong production)
-#     # echo "Generated APP_KEY: $(grep '^APP_KEY=' /var/www/html/.env)"
-# elif [ -n "${APP_KEY}" ]; then
-#     echo "✅ APP_KEY đã được cung cấp qua biến môi trường."
-#     # Có thể ghi giá trị từ biến môi trường vào file .env nếu cần thiết
-#     # sed -i "s|^APP_KEY=.*|APP_KEY=${APP_KEY}|" /var/www/html/.env
-# fi
-
 # 4. XỬ LÝ APP_KEY - ƯU TIÊN BIẾN MÔI TRƯỜNG CAO NHẤT
 echo "🔐 Xử lý APP_KEY..."
 if [ -n "${APP_KEY}" ]; then
@@ -59,48 +42,6 @@ else
     echo "   ⚠️  Cảnh báo: Tạo APP_KEY mới. Trên production, hãy set biến APP_KEY trong Render Dashboard."
     php artisan key:generate --force
 fi
-
-# # 5. Wait for database connection
-# echo "🔄 Waiting for database connection..."
-# MAX_RETRIES=30
-# RETRY_COUNT=0
-
-# # while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-# #     if php artisan migrate:status > /dev/null 2>&1; then
-# #         echo "✅ Database connected successfully!"
-# #         break
-# #     fi
-    
-# #     RETRY_COUNT=$((RETRY_COUNT + 1))
-# #     echo "⏳ Waiting for database... (Attempt $RETRY_COUNT/$MAX_RETRIES)"
-# #     sleep 3
-# # done
-# while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-#     # Sử dụng PHP để kiểm tra kết nối PDO
-#     if php -r "
-#     \$host = getenv('DB_HOST');
-#     \$port = getenv('DB_PORT');
-#     \$dbname = getenv('DB_DATABASE');
-#     \$user = getenv('DB_USERNAME');
-#     \$pass = getenv('DB_PASSWORD');
-    
-#     try {
-#         \$dsn = 'pgsql:host=' . \$host . ';port=' . \$port . ';dbname=' . \$dbname;
-#         new PDO(\$dsn, \$user, \$pass, [PDO::ATTR_TIMEOUT => 3]);
-#         echo '✅ Database connected successfully!';
-#         exit(0);
-#     } catch (PDOException \$e) {
-#         exit(1);
-#     }
-#     " 2>/dev/null; then
-#         echo "✅ Database connected successfully!"
-#         break
-#     fi
-    
-#     RETRY_COUNT=$((RETRY_COUNT + 1))
-#     echo "⏳ Waiting for database... (Attempt $RETRY_COUNT/$MAX_RETRIES)"
-#     sleep 3
-# done
 
 # 5. KIỂM TRA KẾT NỐI DATABASE VỚI BIẾN MÔI TRƯỜNG
 echo "🔄 Kiểm tra kết nối database..."
