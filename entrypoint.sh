@@ -91,12 +91,12 @@ fi
 echo "🗄️  Đang chạy database migrations..."
 php artisan migrate --force
 
-# 7. SAU KHI CÓ ĐỦ BẢNG → XÓA CACHE
-echo "🧹 Xóa cache..."
-php artisan config:clear
-php artisan cache:clear
-php artisan route:clear
-php artisan view:clear
+# # 7. SAU KHI CÓ ĐỦ BẢNG → XÓA CACHE
+# echo "🧹 Xóa cache..."
+# php artisan config:clear
+# php artisan cache:clear
+# php artisan route:clear
+# php artisan view:clear
 
 # # 8. PUBLISH ASSETS (nếu cần)
 # echo "📦 Publishing assets..."
