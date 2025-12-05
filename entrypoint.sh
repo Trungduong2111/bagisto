@@ -85,10 +85,6 @@ if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
     exit 1
 fi
 
-# Đảm bảo cache driver là FILE trước khi xóa cache
-echo "⚙️  Đặt cache driver thành file..."
-php artisan config:set cache.default=file --quiet
-
 # ========== PHẦN CHẠY LỆNH ARTISAN - ĐẢM BẢO ĐÚNG THỨ TỰ ==========
 # 6. CHẠY MIGRATION TRƯỚC TIÊN (tạo bảng)
 echo "🗄️  Đang chạy database migrations..."
