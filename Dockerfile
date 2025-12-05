@@ -66,6 +66,32 @@ RUN mkdir -p /var/www/html/storage/logs \
 # Install composer dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
+# BUILD FRONTEND ASSETS - BAGISTO STRUCTURE
+RUN echo "🎨 Building Bagisto assets..." && \
+    cd /var/www/html && \
+    # Build admin assets
+    if [ -f packages/Webkul/Admin/package.json ]; then \
+        echo "Building Admin assets..." && \
+        cd packages/Webkul/Admin && \
+        npm install --legacy-peer-deps && \
+        npm run build && \
+        cd /var/www/html; \
+    fi && \
+    # Build shop assets  
+    if [ -f packages/Webkul/Shop/package.json ]; then \
+        echo "Building Shop assets..." && \
+        cd packages/Webkul/Shop && \
+        npm install --legacy-peer-deps && \
+        npm run build && \
+        cd /var/www/html; \
+    fi && \
+    # Build root assets nếu có
+    if [ -f package.json ]; then \
+        echo "Building root assets..." && \
+        npm install --legacy-peer-deps && \
+        npm run build; \
+    fi
+
 # Prepare environment file
 # RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
