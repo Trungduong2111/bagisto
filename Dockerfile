@@ -3,7 +3,7 @@ FROM php:8.3-apache
 
 # ARGs & ENV
 ARG APP_ENV=production
-ARG APP_URL=https://shop-production-e1a9.up.railway.app
+ARG APP_URL=https://bagisto-jm1e.onrender.com
 ENV APP_ENV=${APP_ENV}
 ENV APP_URL=${APP_URL}
 ENV PORT=8080
@@ -67,7 +67,7 @@ RUN mkdir -p /var/www/html/storage/logs \
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
 # Prepare environment file
-RUN if [ ! -f .env ]; then cp .env.example .env; fi
+# RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html && \
