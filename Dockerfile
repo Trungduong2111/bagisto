@@ -66,15 +66,6 @@ RUN mkdir -p /var/www/html/storage/logs \
 # Install composer dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
-# BUILD FRONTEND ASSETS - BAGISTO STRUCTURE
-RUN cd /var/www/html && \
-    # Build admin assets
-    (cd packages/Webkul/Admin && npm install --legacy-peer-deps && npm run build) || true && \
-    # Build shop assets  
-    (cd packages/Webkul/Shop && npm install --legacy-peer-deps && npm run build) || true && \
-    # Publish assets anyway
-    # php artisan bagisto:publish --force 2>/dev/null || php artisan vendor:publish --all --force
-
 # Prepare environment file
 # RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
