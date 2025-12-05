@@ -101,8 +101,8 @@ fi
 # ========== THỨ TỰ ĐÚNG: MIGRATE → CLEAR CACHE ==========
 
 # 6. CHẠY MIGRATION TRƯỚC TIÊN (tạo tất cả bảng bao gồm bảng cache)
-echo "🗄️  Đang chạy database migrations..."
-php artisan migrate --force
+# echo "🗄️  Đang chạy database migrations..."
+# php artisan migrate --force
 
 # # 7. SAU KHI CÓ ĐỦ BẢNG → XÓA CACHE
 # echo "🧹 Xóa cache..."
