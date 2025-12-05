@@ -41,6 +41,19 @@ else
     # TRƯỜNG HỢP 3: Không có nguồn nào -> TẠO MỚI (chỉ dành cho local/dev)
     echo "   ⚠️  Cảnh báo: Tạo APP_KEY mới. Trên production, hãy set biến APP_KEY trong Render Dashboard."
     php artisan key:generate --force
+       # Đọc key vừa tạo
+    export APP_KEY=$(grep '^APP_KEY=' /var/www/html/.env | cut -d'=' -f2)
+    echo ""
+    echo "   ╔════════════════════════════════════════════════════════════╗"
+    echo "   ║  ⚠️  QUAN TRỌNG: LƯU APP_KEY NÀY NGAY!                    ║"
+    echo "   ╚════════════════════════════════════════════════════════════╝"
+    echo ""
+    echo "   📋 Copy key này và lưu vào Render Environment Variables:"
+    echo ""
+    echo "      APP_KEY=${APP_KEY}"
+    echo ""
+    echo "   🔐 Sau khi lưu vào Render, deploy lại để không bị tạo key mới."
+    echo ""
 fi
 
 # 5. KIỂM TRA KẾT NỐI DATABASE VỚI BIẾN MÔI TRƯỜNG
