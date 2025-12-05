@@ -73,7 +73,7 @@ RUN cd /var/www/html && \
     # Build shop assets  
     (cd packages/Webkul/Shop && npm install --legacy-peer-deps && npm run build) || true && \
     # Publish assets anyway
-    php artisan bagisto:publish --force 2>/dev/null || php artisan vendor:publish --all --force
+    # php artisan bagisto:publish --force 2>/dev/null || php artisan vendor:publish --all --force
 
 # Prepare environment file
 # RUN if [ ! -f .env ]; then cp .env.example .env; fi
