@@ -85,39 +85,36 @@ if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
     exit 1
 fi
 
-# ========== PHẦN CHẠY LỆNH ARTISAN - ĐẢM BẢO ĐÚNG THỨ TỰ ==========
-# 6. CHẠY MIGRATION TRƯỚC TIÊN (tạo bảng)
+# ========== THỨ TỰ ĐÚNG: MIGRATE → CLEAR CACHE ==========
+
+# 6. CHẠY MIGRATION TRƯỚC TIÊN (tạo tất cả bảng bao gồm bảng cache)
 echo "🗄️  Đang chạy database migrations..."
 php artisan migrate --force
 
-# 8. CHỈ SAU KHI CÓ BẢNG MỚI XÓA CACHE
+# 7. SAU KHI CÓ ĐỦ BẢNG → XÓA CACHE
 echo "🧹 Xóa cache..."
 php artisan config:clear
-php artisan cache:clear  # Giờ không còn lỗi "relation cache does not exist"
+php artisan cache:clear
 php artisan route:clear
 php artisan view:clear
 
-# 7. PUBLISH ASSETS - Ưu tiên lệnh chuyên biệt của Bagisto
-# echo "📦 Publishing Bagisto assets (ưu tiên)..."
-# # Thử lệnh tối ưu của Bagisto trước, nếu không có thì dùng lệnh chung
-# php artisan bagisto:publish --force 2>/dev/null || php artisan vendor:publish --all --force
-
-# # 8. CHẠY DATABASE MIGRATION (BẮT BUỘC - Bỏ comment phần #6 cũ)
-# echo "🗄️  Đang chạy database migrations..."
-# php artisan migrate --force
+# # 8. PUBLISH ASSETS (nếu cần)
+# echo "📦 Publishing assets..."
+# php artisan vendor:publish --all --force 2>/dev/null || true
 
 # 9. Tối ưu hóa và hoàn tất
 echo "⚡ Tối ưu hóa ứng dụng..."
 php artisan optimize
+
 echo "🔗 Tạo storage link..."
 php artisan storage:link --force 2>/dev/null || true
 
-# 11. Final permission check
+# 10. Final permission check
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 echo "✨ Application setup complete!"
 echo "🌐 Starting Apache on port ${PORT:-8080}..."
 
-# 12. Start Apache in foreground
+# 11. Start Apache in foreground
 exec apache2-foreground
