@@ -1,0 +1,13 @@
+/workspace/src/main/java/com/example/ecomm/EcommApplication.java
+/workspace/src/main/java/com/example/ecomm/config/SecurityConfig.java
+/workspace/src/main/java/com/example/ecomm/controller/CategoryController.java
+/workspace/src/main/java/com/example/ecomm/controller/ProductController.java
+/workspace/src/main/java/com/example/ecomm/dto/CategoryDto.java
+/workspace/src/main/java/com/example/ecomm/dto/ProductDto.java
+/workspace/src/main/java/com/example/ecomm/entity/Category.java
+/workspace/src/main/java/com/example/ecomm/entity/Product.java
+/workspace/src/main/java/com/example/ecomm/exception/GlobalExceptionHandler.java
+/workspace/src/main/java/com/example/ecomm/repository/CategoryRepository.java
+/workspace/src/main/java/com/example/ecomm/repository/ProductRepository.java
+/workspace/src/main/java/com/example/ecomm/service/CategoryService.java
+/workspace/src/main/java/com/example/ecomm/service/ProductService.java
